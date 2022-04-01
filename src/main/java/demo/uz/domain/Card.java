@@ -16,13 +16,10 @@ import java.io.Serializable;
 @Table(name = "cards")
 public class Card implements Serializable {
 
-    @Transient
-    public final String sequenceName = "card_id_seq";
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = sequenceName)
-    @SequenceGenerator(name = sequenceName, sequenceName = sequenceName, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "number", unique = true)
