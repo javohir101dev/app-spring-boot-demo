@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LimitRepo extends JpaRepository<Limit, Long> {
+
+    Limit findByOperationCode(String strOperationCode);
+
 }

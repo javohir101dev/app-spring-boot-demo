@@ -11,14 +11,12 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
 @Entity
 @Table(name = "cards")
 public class Card implements Serializable {
 
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

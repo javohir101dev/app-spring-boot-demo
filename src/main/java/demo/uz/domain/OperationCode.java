@@ -16,13 +16,8 @@ import java.io.Serializable;
 @Table(name = "operation_codes")
 public class OperationCode implements Serializable {
 
-    @Transient
-    public final String sequenceName = "operation_code_id_seq";
-
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = sequenceName)
-    @SequenceGenerator(name = sequenceName, sequenceName = sequenceName, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", unique = true)

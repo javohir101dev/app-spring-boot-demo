@@ -17,13 +17,8 @@ import java.io.Serializable;
 @Table(name = "limits")
 public class Limit implements Serializable {
 
-    @Transient
-    public final String sequenceName = "limit_id_seq";
-
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = sequenceName)
-    @SequenceGenerator(name = sequenceName, sequenceName = sequenceName, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "operation_code", unique = true)

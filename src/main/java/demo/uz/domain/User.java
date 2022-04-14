@@ -18,13 +18,8 @@ import java.time.LocalDate;
 @Table(name = "users" , uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User implements Serializable {
 
-    @Transient
-    public final String sequenceName = "user_id_seq";
-
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = sequenceName)
-    @SequenceGenerator(name = sequenceName, sequenceName = sequenceName, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "first_name")

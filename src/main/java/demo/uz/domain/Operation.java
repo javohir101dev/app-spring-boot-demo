@@ -19,13 +19,8 @@ import java.time.LocalDateTime;
 @Table(name = "operations")
 public class Operation implements Serializable {
 
-    @Transient
-    public final String sequenceName = "operation_id_seq";
-
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = sequenceName)
-    @SequenceGenerator(name = sequenceName, sequenceName = sequenceName, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
