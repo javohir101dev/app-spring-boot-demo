@@ -2,6 +2,8 @@ package demo.uz.domain;
 
 import demo.uz.enums.Currency;
 import demo.uz.enums.OperationStatus;
+import demo.uz.helper.Utils;
+import demo.uz.model.OperationDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,8 @@ public class Operation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Card sender;
+    @Column(name = "sender_id", insertable = false, updatable = false)
+    private Long sender_id;
 
     @Column(name = "sender_amount")
     private Long senderAmount;
@@ -44,6 +48,8 @@ public class Operation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private Card receiver;
+    @Column(name = "receiver_id", insertable = false, updatable = false)
+    private Long receiver_id;
 
     @Column(name = "receiver_amount")
     private Long receiverAmount;
@@ -66,4 +72,26 @@ public class Operation implements Serializable {
 
     @Column(name = "operation_date", columnDefinition = "timestamp default now()")
     private LocalDateTime operationDate = LocalDateTime.now();
+
+    public static OperationDto toOperationDto(Operation operation){
+        OperationDto dto = new OperationDto();
+        dto.setId(operation.getId());
+        dto.setOperationCode(operation.getOperationCode());
+        if (!Utils.isEmpty(operation.getSender())){
+            dto.setSenderCardNumber(operation.getSender().getId());
+        }
+        dto.setSenderAmount(operation.getSenderAmount());
+        dto.setSenderCurrency(operation.getSenderCurrency());
+        if (!Utils.isEmpty(operation.getReceiver())){
+            dto.setReceiverCardNumber(operation.getReceiver().getId());
+        }
+        dto.setReceiverAmount(operation.getReceiverAmount());
+        dto.setReceiverCurrency(operation.getReceiverCurrency());
+
+        dto.setCommission(dto.getCommission());
+        dto.setCommissionRate(operation.getCommissionRate());
+        dto.setOperationDate(operation.getOperationDate());
+        return dto;
+    }
+
 }

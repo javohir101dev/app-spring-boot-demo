@@ -1,12 +1,12 @@
 package demo.uz.controller;
 
 import demo.uz.domain.Card;
+import demo.uz.model.OperationDto;
 import demo.uz.service.CardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,13 +18,22 @@ public class CardController {
     private final CardService cardService;
 
     @GetMapping("/get/{id}")
-    public Card get(@PathVariable(value = "id") Long id){
+    public Card get(@PathVariable(value = "id") Long id) {
         return cardService.get(id);
     }
 
     @GetMapping("/get/all")
     public List<Card> getAll() {
-       return cardService.getAllCards();
+        return cardService.getAllCards();
     }
+
+    @PostMapping("/operations")
+    public List<OperationDto> cardOperations(@RequestParam(name = " ") Long id,
+                                             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+                                             @RequestParam(name = "size", defaultValue = "5", required = false) Integer size) {
+        return cardService.getOperations(id, page, size);
+    }
+
+
 
 }

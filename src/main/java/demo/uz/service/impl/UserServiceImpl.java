@@ -1,20 +1,29 @@
 package demo.uz.service.impl;
 
+import demo.uz.domain.Card;
+import demo.uz.domain.Operation;
 import demo.uz.domain.User;
+import demo.uz.enums.Currency;
+import demo.uz.helper.Utils;
+import demo.uz.model.CardDto;
+import demo.uz.model.OperationDto;
 import demo.uz.model.UserCrudDto;
+import demo.uz.repository.CardRepo;
+import demo.uz.repository.OperationRepo;
 import demo.uz.repository.UserRepo;
 import demo.uz.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
+    private final CardRepo cardRepo;
+    private final OperationRepo operationRepo;
 
     @Override
     public User save(UserCrudDto userCrudDto) {
@@ -61,5 +70,55 @@ public class UserServiceImpl implements UserService {
         }
          userRepo.delete(optionalUser.get());
         return true;
+    }
+
+    @Override
+    public List<CardDto> getUserCards(Long id, List<String> types) {
+        Optional<User> optionalUser = userRepo.findById(id);
+        if (!optionalUser.isPresent()){
+            throw new RuntimeException(String.format("User id with %s is not found", id));
+        }
+
+        List<String> currencies = new ArrayList<>();
+
+        if (Utils.isEmpty(types) ){
+            currencies = Collections.singletonList(Arrays.toString(Currency.values()));
+        }else {
+            for (String type : types) {
+//                todo check try catch with currency
+                currencies.add(Currency.valueOf(type).toString());
+            }
+        }
+
+        List<Card> cards = cardRepo.findByUserIdAAndCurrencies(id, currencies);
+
+        List<CardDto> cardDtoList = new ArrayList<>();
+
+        cards.forEach(card -> cardDtoList.add(Card.toDto(card)));
+        return cardDtoList;
+    }
+
+    @Override
+    public List<OperationDto> getOperations(Long id, Integer page, Integer size) {
+//        todo sender amount and comission rate correcting persentage
+        Optional<User> optionalUser = userRepo.findById(id);
+        if (!optionalUser.isPresent()){
+            throw new RuntimeException(String.format("User id with %s is not found", id));
+        }
+
+        List<Long> cardIds = cardRepo.getAllCardIdsByUserId(id);
+        if (Utils.isEmpty(cardIds)){
+            return null;
+        }
+
+        List<Operation> operations = operationRepo.findAllByCards(cardIds, page * size, size);
+
+        List<OperationDto> operationDtoList = new ArrayList<>();
+
+        for (Operation operation : operations) {
+            operationDtoList.add(Operation.toOperationDto(operation));
+        }
+
+        return operationDtoList;
     }
 }
