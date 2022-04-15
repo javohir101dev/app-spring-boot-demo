@@ -8,14 +8,16 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users" , uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User implements Serializable {
 
     @Id
@@ -43,23 +45,13 @@ public class User implements Serializable {
     @Column(name = "birthday", columnDefinition = "timestamp default null")
     private LocalDate birthday;
 
-    public static User toUser(UserCrudDto userCrudDto){
-        User user = new User();
-        user.setFirstName(userCrudDto.getFirstName());
-        user.setLastName(userCrudDto.getLastName());
-        user.setUsername(userCrudDto.getUsername());
-        user.setAddress(userCrudDto.getAddress());
-        user.setActive(true);
-        user.setBirthday(userCrudDto.getBirthday());
-        user.setGender(userCrudDto.isGender());
-        return user;
-    }
-    public static User toUser(User user, UserCrudDto userCrudDto){
+    public static User toUser(User user, UserCrudDto userCrudDto) {
         user.setFirstName(userCrudDto.getFirstName() != null ? userCrudDto.getFirstName() : user.getFirstName());
         user.setLastName(userCrudDto.getLastName() != null ? userCrudDto.getLastName() : user.getLastName());
         user.setUsername(userCrudDto.getUsername() != null ? userCrudDto.getUsername() : user.getUsername()); // todo if username exist it will throw an exception
         user.setAddress(userCrudDto.getAddress() != null ? userCrudDto.getFirstName() : user.getFirstName());
-        user.setBirthday(userCrudDto.getBirthday() != null ? userCrudDto.getBirthday() : user.getBirthday());
+
+        user.setBirthday(userCrudDto.getBirthday() != null ? LocalDate.parse(userCrudDto.getBirthday(),DateTimeFormatter.ofPattern("yyyy-MM-dd")) : user.getBirthday());
 //        user.setGender(userCrudDto.isGender() != null ? userCrudDto.isGender() : user.isGender());
         return user;
     }

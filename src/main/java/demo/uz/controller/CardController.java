@@ -28,7 +28,7 @@ public class CardController {
     }
 
     @PostMapping("/operations")
-    public List<OperationDto> cardOperations(@RequestParam(name = " ") Long id,
+    public List<OperationDto> cardOperations(@RequestParam(name = "id") Long id,
                                              @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
                                              @RequestParam(name = "size", defaultValue = "5", required = false) Integer size) {
         return cardService.getOperations(id, page, size);

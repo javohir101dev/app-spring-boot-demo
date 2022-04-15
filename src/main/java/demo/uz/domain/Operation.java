@@ -73,25 +73,4 @@ public class Operation implements Serializable {
     @Column(name = "operation_date", columnDefinition = "timestamp default now()")
     private LocalDateTime operationDate = LocalDateTime.now();
 
-    public static OperationDto toOperationDto(Operation operation){
-        OperationDto dto = new OperationDto();
-        dto.setId(operation.getId());
-        dto.setOperationCode(operation.getOperationCode());
-        if (!Utils.isEmpty(operation.getSender())){
-            dto.setSenderCardNumber(operation.getSender().getId());
-        }
-        dto.setSenderAmount(operation.getSenderAmount());
-        dto.setSenderCurrency(operation.getSenderCurrency());
-        if (!Utils.isEmpty(operation.getReceiver())){
-            dto.setReceiverCardNumber(operation.getReceiver().getId());
-        }
-        dto.setReceiverAmount(operation.getReceiverAmount());
-        dto.setReceiverCurrency(operation.getReceiverCurrency());
-
-        dto.setCommission(dto.getCommission());
-        dto.setCommissionRate(operation.getCommissionRate());
-        dto.setOperationDate(operation.getOperationDate());
-        return dto;
-    }
-
 }

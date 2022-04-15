@@ -1,5 +1,6 @@
 package demo.uz.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,8 @@ public class UserCrudDto {
 
     private boolean gender;
 
-    private LocalDate birthday;
+    private String birthday;
+
+    @ApiModelProperty(hidden = true)
+    private boolean active = true;
 }

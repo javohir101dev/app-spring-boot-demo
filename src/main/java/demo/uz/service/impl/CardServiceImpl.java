@@ -1,9 +1,8 @@
 package demo.uz.service.impl;
 
+import demo.uz.common.MapstructMapper;
 import demo.uz.domain.Card;
 import demo.uz.domain.Operation;
-import demo.uz.domain.User;
-import demo.uz.helper.Utils;
 import demo.uz.model.OperationDto;
 import demo.uz.repository.CardRepo;
 import demo.uz.repository.OperationRepo;
@@ -21,6 +20,7 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepo cardRepo;
     private final OperationRepo operationRepo;
+    private final MapstructMapper mapper;
 
     @Override
     public Card get(Long id) {
@@ -46,7 +46,7 @@ public class CardServiceImpl implements CardService {
         List<OperationDto> operationDtoList = new ArrayList<>();
 
         for (Operation operation : operations) {
-            operationDtoList.add(Operation.toOperationDto(operation));
+            operationDtoList.add(mapper.toOperationDto(operation));
         }
 
         return operationDtoList;

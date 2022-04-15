@@ -1,5 +1,6 @@
 package demo.uz.service.impl;
 
+import demo.uz.common.MapstructMapper;
 import demo.uz.domain.Card;
 import demo.uz.domain.Operation;
 import demo.uz.domain.User;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final CardRepo cardRepo;
     private final OperationRepo operationRepo;
+    private final MapstructMapper mapper;
 
     @Override
     public User save(UserCrudDto userCrudDto) {
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
         if (byUsername != null) {
             throw new RuntimeException(String.format("This username %s is already exists", userCrudDto.getUsername()));
         }
-        User user = User.toUser(userCrudDto);
+        User user = mapper.toUser(userCrudDto);
         return userRepo.save(user);
     }
 
@@ -81,8 +83,10 @@ public class UserServiceImpl implements UserService {
 
         List<String> currencies = new ArrayList<>();
 
-        if (Utils.isEmpty(types) ){
-            currencies = Collections.singletonList(Arrays.toString(Currency.values()));
+        if (Utils.isEmpty(types)){
+            for (Currency value : Currency.values()) {
+                currencies.add(value.toString());
+            }
         }else {
             for (String type : types) {
 //                todo check try catch with currency
@@ -92,15 +96,13 @@ public class UserServiceImpl implements UserService {
 
         List<Card> cards = cardRepo.findByUserIdAAndCurrencies(id, currencies);
 
-        List<CardDto> cardDtoList = new ArrayList<>();
-
-        cards.forEach(card -> cardDtoList.add(Card.toDto(card)));
+        List<CardDto> cardDtoList = mapper.toCardDtoList(cards);
         return cardDtoList;
     }
 
     @Override
     public List<OperationDto> getOperations(Long id, Integer page, Integer size) {
-//        todo sender amount and comission rate correcting persentage
+//        todo sender amount and commission rate correcting percentage
         Optional<User> optionalUser = userRepo.findById(id);
         if (!optionalUser.isPresent()){
             throw new RuntimeException(String.format("User id with %s is not found", id));
@@ -113,12 +115,6 @@ public class UserServiceImpl implements UserService {
 
         List<Operation> operations = operationRepo.findAllByCards(cardIds, page * size, size);
 
-        List<OperationDto> operationDtoList = new ArrayList<>();
-
-        for (Operation operation : operations) {
-            operationDtoList.add(Operation.toOperationDto(operation));
-        }
-
-        return operationDtoList;
+        return mapper.toOperationDto(operations);
     }
 }
