@@ -3,6 +3,7 @@ package demo.uz.controller;
 import demo.uz.domain.Operation;
 import demo.uz.domain.User;
 import demo.uz.model.OperationCrudDto;
+import demo.uz.model.ReportDto;
 import demo.uz.model.UserCrudDto;
 import demo.uz.model.resp.ApiResponse;
 import demo.uz.service.OperationService;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.Month;
 
 
 @RestController
@@ -33,6 +37,12 @@ public class OperationController {
     @PostMapping("/save")
     public ApiResponse save(@RequestBody OperationCrudDto operationCrudDto) {
         return operationService.save(operationCrudDto);
+    }
+
+    @PostMapping("report/card/monthly")
+    public ReportDto getReportCardMonthly(@RequestParam(name = "id") Long cardId,
+                                          @RequestParam(name = "month", required = false) Month month){
+    return operationService.getReportCardMonthly(cardId, month);
     }
 
 }

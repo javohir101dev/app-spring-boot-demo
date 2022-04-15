@@ -2,7 +2,9 @@ package demo.uz.service.impl;
 
 import demo.uz.domain.*;
 import demo.uz.enums.OperationStatus;
+import demo.uz.helper.Utils;
 import demo.uz.model.OperationCrudDto;
+import demo.uz.model.ReportDto;
 import demo.uz.model.resp.ApiResponse;
 import demo.uz.repository.*;
 import demo.uz.service.OperationService;
@@ -13,6 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Optional;
 
 @Service
@@ -129,5 +135,28 @@ public class OperationServiceImpl implements OperationService {
 
         return new ApiResponse("Operation created", true, HttpStatus.OK, operationRepo.save(operation));
 
+    }
+
+    @Override
+    public ReportDto getReportCardMonthly(Long cardId, Month month) {
+        Optional<Card> optionalSenderCard = cardRepo.findById(cardId);
+        if (!optionalSenderCard.isPresent()) {
+            throw new RuntimeException(String.format("Card with id: %s is not found", cardId));
+        }
+
+        LocalDate nowDate = LocalDate.now();
+
+        LocalDateTime start;
+        LocalDateTime end;
+
+        if (!Utils.isEmpty(month)){
+              start = LocalDateTime.of(LocalDate.of(nowDate.getYear(), month, 1), LocalTime.MIN);
+              end = LocalDateTime.of(LocalDate.of(nowDate.getYear(), month, month.length(nowDate.isLeapYear())), LocalTime.MAX);
+        }else {
+              start = LocalDateTime.of(LocalDate.of(nowDate.getYear(), nowDate.getMonth(), 1), LocalTime.MIN);
+              end = LocalDateTime.of(LocalDate.of(nowDate.getYear(), nowDate.getMonth(), month.length(nowDate.isLeapYear())), LocalTime.MAX);
+        }
+
+        return operationRepo.getReportCardMonthly(cardId, start, end);
     }
 }
